@@ -46,7 +46,9 @@ class S3Controller(base.BaseController):
             upload = uploader.get_resource_uploader(rsc)
             bucket_name = config.get('ckanext.s3filestore.aws_bucket_name')
             region = config.get('ckanext.s3filestore.region_name')
-            host_name = config.get('ckanext.s3filestore.host_name')
+            host_name = config.get('ckanext.s3filestore.public_host_name')
+            if not host_name:
+                host_name = config.get('ckanext.s3filestore.host_name')
             bucket = upload.get_s3_bucket(bucket_name)
 
             if filename is None:
