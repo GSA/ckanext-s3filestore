@@ -24,13 +24,12 @@ class S3FileStorePlugin(plugins.SingletonPlugin):
         missing_config = "{0} is not configured. Please amend your .ini file."
         config_options = ['ckanext.s3filestore.aws_bucket_name']
         if not config.get('ckanext.s3filestore.aws_use_iam_role'):
-            config_options.append([
-                'ckanext.s3filestore.aws_access_key_id',
-                'ckanext.s3filestore.aws_secret_access_key',
-                'ckanext.s3filestore.region_name',
-                'ckanext.s3filestore.signature_version',
-                'ckanext.s3filestore.host_name'
-            ])
+            config_options.append('ckanext.s3filestore.aws_access_key_id')
+            config_options.append('ckanext.s3filestore.aws_secret_access_key')
+            config_options.append('ckanext.s3filestore.region_name')
+            config_options.append('ckanext.s3filestore.signature_version')
+            config_options.append('ckanext.s3filestore.host_name')
+
         config_options = tuple(config_options)
         for option in config_options:
             if not config.get(option, None):
