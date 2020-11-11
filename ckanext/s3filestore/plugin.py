@@ -31,6 +31,7 @@ class S3FileStorePlugin(plugins.SingletonPlugin):
                 'ckanext.s3filestore.signature_version',
                 'ckanext.s3filestore.host_name'
             ])
+        config_options = tuple(config_options)
         for option in config_options:
             if not config.get(option, None):
                 raise RuntimeError(missing_config.format(option))
