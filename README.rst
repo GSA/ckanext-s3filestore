@@ -79,6 +79,9 @@ Optional::
     # An optional path to prepend to keys
     ckanext.s3filestore.aws_storage_path = my-site-name
 
+    # An optional path to a public facing s3 hostname (for local testing)
+    ckanext.s3filestore.public_host_name = 
+
     # An optional setting to fallback to filesystem for downloads
     ckanext.s3filestore.filesystem_download_fallback = true
     # The ckan storage path option must also be set correctly for the fallback to work
