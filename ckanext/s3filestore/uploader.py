@@ -40,6 +40,7 @@ class BaseS3Uploader(object):
 
     def __init__(self):
         self.bucket_name = config.get('ckanext.s3filestore.aws_bucket_name')
+        self.aws_use_iam_role = config.get('ckanext.s3filestore.aws_use_iam_role')
         self.p_key = config.get('ckanext.s3filestore.aws_access_key_id')
         self.s_key = config.get('ckanext.s3filestore.aws_secret_access_key')
         self.region = config.get('ckanext.s3filestore.region_name')
@@ -52,9 +53,12 @@ class BaseS3Uploader(object):
         return directory
 
     def get_s3_session(self):
-        return boto3.session.Session(aws_access_key_id=self.p_key,
-                                     aws_secret_access_key=self.s_key,
-                                     region_name=self.region)
+        if self.aws_use_iam_role:
+            return boto3.session.Session()
+        else:
+            return boto3.session.Session(aws_access_key_id=self.p_key,
+                                        aws_secret_access_key=self.s_key,
+                                        region_name=self.region)
 
     def get_s3_bucket(self, bucket_name):
         '''Return a boto bucket, creating it if it doesn't exist.'''
@@ -107,9 +111,7 @@ class BaseS3Uploader(object):
         '''Uploads the `upload_file` to `filepath` on `self.bucket`.'''
         upload_file.seek(0)
 
-        session = boto3.session.Session(aws_access_key_id=self.p_key,
-                                        aws_secret_access_key=self.s_key,
-                                        region_name=self.region)
+        session = self.get_s3_session()
         s3 = session.resource('s3', endpoint_url=self.host_name,
                               config=botocore.client.Config(signature_version=self.signature))
         try:
@@ -123,9 +125,7 @@ class BaseS3Uploader(object):
 
     def clear_key(self, filepath):
         '''Deletes the contents of the key at `filepath` on `self.bucket`.'''
-        session = boto3.session.Session(aws_access_key_id=self.p_key,
-                                    aws_secret_access_key=self.s_key,
-                                    region_name=self.region)
+        session = self.get_s3_session()
         s3 = session.resource('s3', endpoint_url=self.host_name, config=botocore.client.Config(
                              signature_version=self.signature))
         try:
