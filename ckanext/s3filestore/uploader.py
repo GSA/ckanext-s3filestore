@@ -70,7 +70,7 @@ class BaseS3Uploader(object):
                                              signature_version=self.signature))
         bucket = s3.Bucket(bucket_name)
         try:
-            if s3.Bucket(bucket.name) in s3.buckets.all():
+            if s3.meta.client.head_bucket(Bucket=bucket.name):
                 log.info('Bucket {0} found!'.format(bucket_name))
 
             else:
@@ -86,7 +86,7 @@ class BaseS3Uploader(object):
                     log.warning('Could not create bucket {0}: {1}'.format(
                         bucket_name, str(e)))
         except botocore.exceptions.ClientError as e:
-            error_code = int(e.response['Error']['Code'])
+            error_code = int(e.response['ResponseMetadata']['HTTPStatusCode'])
             if error_code == 404:
                 log.warning('Bucket {0} could not be found, ' +
                             'attempting to create it...'.format(bucket_name))
